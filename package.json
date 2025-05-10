@@ -1,0 +1,28 @@
+{
+  "name": "xx-ml",
+  "version": "0.0.0",
+  "description": "coming soon...",
+  "keywords": [
+    "xml"
+  ],
+  "main": "xx-ml.js",
+  "scripts": {
+    "test": "nyc mocha",
+    "coverage": "nyc report --reporter=lcov"
+  },
+  "author": "jazz-soft (https://jazz-soft.net/)",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "^11.2.2",
+    "nyc": "^17.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jazz-soft/xx-path.git"
+  },
+  "homepage": "https://github.com/jazz-soft/xx-path",
+  "bugs": "https://github.com/jazz-soft/xx-path/issues",
+  "license": "MIT",
+  "private": true
+}
