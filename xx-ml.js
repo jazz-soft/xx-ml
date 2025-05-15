@@ -1,4 +1,20 @@
 function XML(s) {
+  this.eol = linebreaks(s);
+}
+
+XML.prototype.rc = function(n) { return rc(this.eol, n); };
+
+function linebreaks(s) {
+  var a = [0];
+  for (var n = 0; n < s.length; n++) if (s[n] == '\n') a.push(n + 1);
+  return a;
+}
+
+function rc(a, n) {
+  var r, c;
+  for (r = 0; r < a.length; r++) if (a[r] > n) break;
+  r--;
+  return [r, n - a[r]];
 }
 
 XML.normalize = function(s) {
