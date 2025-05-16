@@ -1,5 +1,7 @@
 function XML(s) {
+  this.txt = s;
   this.eol = linebreaks(s);
+  this.frg = [];
 }
 
 XML.prototype.rc = function(n) { return rc(this.eol, n); };
