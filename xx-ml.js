@@ -10,6 +10,28 @@ XML.prototype.rc = function(n) { return rc(this.eol, n); };
 
 function _parse(x, s, p) {
   p = p || 0;
+  while (p < s.length) {
+    if (s[p] == '<') {
+      if (s[p + 1] == '?') {
+        p += _skip(x, s, p);
+      }
+      else if (s[p + 1] == '!') {
+        p += _skip(x, s, p);
+      }
+      else if (s[p + 1] == '/') {
+        p += _skip(x, s, p);
+      }
+      else {
+        p += _skip(x, s, p);
+      }
+    }
+    else {
+      p += _txt(x, s, p);
+    }
+  }
+}
+
+function _txt(x, s, p) {
   var n;
   var empty = true;
   for (n = p; n < s.length; n++) {
@@ -17,9 +39,18 @@ function _parse(x, s, p) {
     if (empty && !_sp(s[n])) empty = false;
   }
   if (n > p) {
-    x.a.push({ t: empty ? 'space' : 'txt', p: p, len: n - p });
+    x.a.push({ t: empty ? 'sp' : 'txt', b: p, e: n });
   }
-  p = n;
+  return n - p;
+}
+
+function _skip(x, s, p) {
+  var n;
+  for (n = p; n < s.length; n++) {
+    if (s[n] == '>') break;
+  }
+  //console.log('SKIP:', s.substring(p, n + 1));
+  return n - p + 1;
 }
 
 function _sp(c) { return c == ' ' || c == '\t' || c == '\n'; }
@@ -35,6 +66,33 @@ function rc(a, n) {
   for (r = 0; r < a.length; r++) if (a[r] > n) break;
   r--;
   return [r, n - a[r]];
+}
+
+function _ns(c) {
+  c = c.charCodeAt(0);
+  return c == 0x3a || c == 0x5f   // : _
+    || c >= 0x41 && c <= 0x5a     // A-Z
+    || c >= 0x61 && c <= 0x7a     // a-z
+    || c >= 0xC0 && c <= 0xD6
+    || c >= 0xD8 && c <= 0xF6
+    || c >= 0xF8 && c <= 0x2FF
+    || c >= 0x370 && c <= 0x37D
+    || c >= 0x37F && c <= 0x1FFF
+    || c >= 0x200C && c <= 0x200D
+    || c >= 0x2070 && c <= 0x218F
+    || c >= 0x2C00 && c <= 0x2FEF
+    || c >= 0x3001 && c <= 0xD7FF
+    || c >= 0xF900 && c <= 0xFDCF
+    || c >= 0xFDF0 && c <= 0xFFFD
+    || c >= 0x10000 && c <= 0xEFFFF;
+}
+
+function _nc(c) {
+  c = c.charCodeAt(0);
+  return c == 0x2d || c == 0x2e || c == 0xb7 // - . ·
+    || c >= 0x30 && c <= 0x39       // 0-9
+    || c >= 0x300 && c <= 0x36f     // Combining Diacritical Marks
+    || c >= 0x203f && c <= 0x2040;  // ‿ ⁀
 }
 
 XML.normalize = function(s) {
