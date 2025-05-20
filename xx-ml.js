@@ -13,16 +13,16 @@ function _parse(x, s, p) {
   while (p < s.length) {
     if (s[p] == '<') {
       if (s[p + 1] == '?') {
-        p += _skip(x, s, p);
+        p += _skip(s, p);
       }
       else if (s[p + 1] == '!') {
-        p += _skip(x, s, p);
+        p += _skip(s, p);
       }
       else if (s[p + 1] == '/') {
-        p += _skip(x, s, p);
+        p += _skip(s, p);
       }
       else {
-        p += _skip(x, s, p);
+        p += _tag(x, s, p);
       }
     }
     else {
@@ -44,13 +44,41 @@ function _txt(x, s, p) {
   return n - p;
 }
 
-function _skip(x, s, p) {
+function _tag(x, s, p) {
+  var tag = _name(s, p + 1);
+  var n = p + tag.length;
+  while (true) {
+    if (_sp(s[n])) {
+      n++;
+      continue;
+    }
+  }
+  for (n = p; n < s.length; n++) {
+    if (s[n] == '>') break;
+  }
+  console.log('TAG:', tag, s.substring(p, n + 1));
+  return n - p + 1;
+}
+
+function _name(s, p) {
+  var n = p;
+  if (!_ns(s[n])) _bad(s, n);
+  for (n++; _ns(s[n]) || _nc(s[n]); n++) ;
+  if (!_sp(s[n]) && s[n] != '/' && s[n] != '>') _bad(s, n);
+  return s.substring(p, n);
+}
+
+function _skip(s, p) {
   var n;
   for (n = p; n < s.length; n++) {
     if (s[n] == '>') break;
   }
   //console.log('SKIP:', s.substring(p, n + 1));
   return n - p + 1;
+}
+
+function _bad(s, n) {
+  throw ['unexpected character', n, s[n]];
 }
 
 function _sp(c) { return c == ' ' || c == '\t' || c == '\n'; }
