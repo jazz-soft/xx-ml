@@ -29,6 +29,7 @@ function _parse(x, s, p) {
       p += _txt(x, s, p);
     }
   }
+  return p;
 }
 
 function _txt(x, s, p) {
@@ -47,10 +48,18 @@ function _txt(x, s, p) {
 function _tag(x, s, p) {
   var tag = _name(s, p + 1);
   var n = p + tag.length;
+  var t;
   while (true) {
-    if (_sp(s[n])) {
+    if (s[n] != '>') {
+    //if (_sp(s[n])) {
       n++;
       continue;
+    }
+    else if (s[n] == '>') {
+      n++;
+      t = { t: 'tag', tag: tag, up: x, a: [] };
+      x.a.push(t);
+      _printtag(t);
     }
   }
   for (n = p; n < s.length; n++) {
@@ -75,6 +84,15 @@ function _skip(s, p) {
   }
   //console.log('SKIP:', s.substring(p, n + 1));
   return n - p + 1;
+}
+
+function _printtag(t) {
+  var a = [];
+  while (t.tag) {
+    a.push(t.tag);
+    t = t.up;
+  }
+  console.log(a.reverse().join(' > '));
 }
 
 function _bad(s, n) {
