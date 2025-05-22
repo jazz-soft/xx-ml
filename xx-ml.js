@@ -29,7 +29,6 @@ function _parse(x, s, p) {
       p += _txt(x, s, p);
     }
   }
-  return p;
 }
 
 function _txt(x, s, p) {
@@ -62,11 +61,6 @@ function _tag(x, s, p) {
       _printtag(t);
     }
   }
-  for (n = p; n < s.length; n++) {
-    if (s[n] == '>') break;
-  }
-  console.log('TAG:', tag, s.substring(p, n + 1));
-  return n - p + 1;
 }
 
 function _name(s, p) {
